@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Publish Sphinx Image Inverter Package to PyPI
+name: Publish Sphinx Dropdown Toggle Package to PyPI
 
 on:
   push
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/sphinx-image-inverter
+      url: https://pypi.org/p/sphinx-dropwdown-toggle
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 
