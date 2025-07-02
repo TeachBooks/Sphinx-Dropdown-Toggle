@@ -1,13 +1,7 @@
 ````{margin}
-```{attributiongrey} Attribution
-:class: attribution
-
-This page reuses BSD 3-Clause License content from {cite:t}`download_link`. {fa}`quote-left`{ref}`Find out more here.<external_resources>`
-```
-
 ```{admonition} User types
 :class: tip
-This section is useful for user type 4-5.
+This section is useful for user type 3-5.
 ```
 +++
 {bdg-primary}`Sphinx Extension`

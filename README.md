@@ -11,14 +11,14 @@ To install the Sphinx-Dropdown-Toggle, follow these steps:
 
 Install the `Sphinx-Dropdown-Toggle` package using `pip`:
 ```
-pip install git+https://github.com/TeachBooks/Sphinx-Dropdown-Toggle.git
+pip install sphinx-dropdown-toggle
 ```
 
 **Step 2: Add to `requirements.txt`**
 
 Make sure that the package is included in your project's `requirements.txt` to track the dependency:
 ```
-git+https://github.com/TeachBooks/Sphinx-Dropdown-Toggle.git
+sphinx-dropdown-toggle
 ```
 
 **Step 3: Enable in `_config.yml`**
