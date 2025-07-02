@@ -7,7 +7,7 @@ try:
 except ImportError:
     __version__ = "1.0.0"
 
-def copy_javascript(app: Sphinx, exception):
+def copy_javascript(app: Sphinx, exc):
     # Copy the JavaScript file to the output directory
     js_file = os.path.join(os.path.dirname(__file__), 'static', 'dropdown_toggle.js')
     
