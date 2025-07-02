@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/sphinx-dropwdown-toggle
+      url: https://pypi.org/p/sphinx-dropdown-toggle
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 
