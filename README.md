@@ -1,4 +1,4 @@
-# Sphinx Dropdown Toggle
+# Dropdown Toggle
 
 ## Introduction
 
