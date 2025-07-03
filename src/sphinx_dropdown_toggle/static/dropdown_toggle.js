@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Check for dropdowns
     const article = document.querySelector('article.bd-article');
-    const dropdowns = article ? article.querySelectorAll('.dropdown, .sd-dropdown') : [];
+    const dropdowns = article ? article.querySelectorAll('details.dropdown, div.dropdown, .sd-dropdown') : [];
     if (dropdowns.length === 0) {
         return; // Exit if no dropdowns found
     }
