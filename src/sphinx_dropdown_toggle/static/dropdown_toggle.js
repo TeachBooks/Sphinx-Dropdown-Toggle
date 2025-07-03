@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Check for dropdowns
     const article = document.querySelector('article.bd-article');
-    const dropdowns = article ? article.querySelectorAll('details.dropdown, div.dropdown') : [];
+    const dropdowns = article ? article.querySelectorAll('details.dropdown, div.dropdown, .sd-dropdown') : [];
     if (dropdowns.length === 0) {
         return; // Exit if no dropdowns found
     }
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             button.innerHTML = '<i class="fa-solid fa-angles-up"></i>';
             button.title = "Close all dropdowns";
         }
-        const details = document.querySelectorAll('details.dropdown');
+        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown');
         details.forEach(detail => {
             if (!detail.open) {
                 detail.open = true;
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
             button.innerHTML = '<i class="fa-solid fa-angles-down"></i>';
             button.title = "Open all dropdowns";
         }
-        const details = document.querySelectorAll('details.dropdown');
+        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown');
         details.forEach(detail => {
             if (detail.open) {
                 detail.open = false;
