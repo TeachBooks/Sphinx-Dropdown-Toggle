@@ -43,34 +43,51 @@ document.addEventListener("DOMContentLoaded", () => {
         const { allOpen, allClosed } = checkDropdownState();
         const button = document.getElementById(toggleButtonId);
         
-        if (!button) return;
+        console.log('updateToggleButton called:', { allOpen, allClosed });
+        
+        if (!button) {
+            console.log('Toggle button not found');
+            return;
+        }
         
         if (allOpen) {
+            console.log('Setting to "close all" state');
             document.body.classList.add(rootDropdownState);
             button.innerHTML = '<i class="fa-solid fa-angles-up"></i>';
             button.title = "Close all dropdowns";
         } else if (allClosed) {
+            console.log('Setting to "open all" state');
             document.body.classList.remove(rootDropdownState);
             button.innerHTML = '<i class="fa-solid fa-angles-down"></i>';
             button.title = "Open all dropdowns";
+        } else {
+            console.log('Mixed state - keeping current button state');
         }
         // If some are open and some are closed, keep current state
     }
     
     // Function to set up observers for dropdown changes
     function setupDropdownWatchers() {
+        console.log('Setting up dropdown watchers...');
+        
         // Watch for changes to details elements
         const details = document.querySelectorAll('details.dropdown, details.sd-dropdown');
+        console.log('Found', details.length, 'details dropdowns');
         details.forEach(detail => {
-            detail.addEventListener('toggle', updateToggleButton);
+            detail.addEventListener('toggle', () => {
+                console.log('Details dropdown toggled:', detail.open);
+                updateToggleButton();
+            });
         });
         
         // Watch for class changes on div dropdowns using MutationObserver
         const divs = document.querySelectorAll('div.dropdown');
+        console.log('Found', divs.length, 'div dropdowns');
         if (divs.length > 0) {
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        console.log('Div dropdown class changed:', mutation.target.className);
                         updateToggleButton();
                     }
                 });
@@ -83,10 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Also watch for toggle-button changes
         const buttons = document.querySelectorAll('button.toggle-button');
+        console.log('Found', buttons.length, 'toggle buttons');
         if (buttons.length > 0) {
             const buttonObserver = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        console.log('Toggle button class changed:', mutation.target.className);
                         updateToggleButton();
                     }
                 });
