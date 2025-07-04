@@ -130,23 +130,31 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
         
-        // Also watch for toggle-button changes
-        const buttons = document.querySelectorAll('button.toggle-button');
-        console.log('Found', buttons.length, 'toggle buttons');
-        if (buttons.length > 0) {
-            const buttonObserver = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        console.log('Toggle button class changed:', mutation.target.className);
-                        updateToggleButton();
-                    }
-                });
+        // Hook into togglebutton click events more directly
+        // Add click listeners to admonition titles and toggle buttons
+        const admonitionTitles = document.querySelectorAll('.admonition-title');
+        const toggleButtons = document.querySelectorAll('button.toggle-button');
+        
+        console.log('Found', admonitionTitles.length, 'admonition titles');
+        console.log('Found', toggleButtons.length, 'toggle buttons');
+        
+        // Listen for clicks on admonition titles (which trigger toggles)
+        admonitionTitles.forEach(title => {
+            title.addEventListener('click', () => {
+                console.log('Admonition title clicked, updating toggle state...');
+                // Use a small delay to let the togglebutton script finish its work
+                setTimeout(updateToggleButton, 10);
             });
-            
-            buttons.forEach(button => {
-                buttonObserver.observe(button, { attributes: true, attributeFilter: ['class'] });
+        });
+        
+        // Listen for clicks on toggle buttons directly
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                console.log('Toggle button clicked, updating toggle state...');
+                // Use a small delay to let the togglebutton script finish its work
+                setTimeout(updateToggleButton, 10);
             });
-        }
+        });
     }
 
     const headerEnd = document.querySelector(".article-header-buttons");
@@ -160,11 +168,35 @@ document.addEventListener("DOMContentLoaded", () => {
         headerEnd.prepend(button);
     }
     
-    // Set up watchers for dropdown state changes
-    setupDropdownWatchers();
+    // Function to initialize watchers and state
+    function initializeToggleSystem() {
+        console.log('Initializing toggle system...');
+        setupDropdownWatchers();
+        updateToggleButton();
+    }
     
-    // Initial state check
-    updateToggleButton();
+    // Hook into the same system that togglebutton.js uses
+    const sphinxToggleRunWhenDOMLoaded = cb => {
+        if (document.readyState != 'loading') {
+            cb()
+        } else if (document.addEventListener) {
+            document.addEventListener('DOMContentLoaded', cb)
+        } else {
+            document.attachEvent('onreadystatechange', function() {
+                if (document.readyState == 'complete') cb()
+            })
+        }
+    }
+    
+    // Initialize our system after togglebutton.js has done its work
+    // We use a small delay to ensure togglebutton.js has finished
+    sphinxToggleRunWhenDOMLoaded(() => {
+        // Give togglebutton.js a moment to finish adding buttons
+        setTimeout(() => {
+            console.log('DOM loaded, initializing toggle synchronization...');
+            initializeToggleSystem();
+        }, 10);
+    });
 
     document.getElementById(toggleButtonId)?.addEventListener("click", () => {
         if (document.body.classList.contains(rootDropdownState)) {
