@@ -16,12 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
         
         let allOpen = true;
         let allClosed = true;
+        let hasToggleableDropdowns = false;
         
         console.log('Checking dropdown state...');
         
         // Check details elements
         details.forEach((detail, index) => {
             console.log(`Details ${index}:`, detail.open);
+            hasToggleableDropdowns = true;
             if (detail.open) {
                 allClosed = false;
             } else {
@@ -29,39 +31,39 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
         
-        // Check div dropdowns - need to figure out how to detect if they're open
+        // Check div dropdowns - only check ones that actually have toggle buttons
         divs.forEach((div, index) => {
             const classes = Array.from(div.classList);
             console.log(`Div ${index} classes:`, classes);
             
-            // Check if the div has toggle-hidden class (original logic)
-            if (div.classList.contains('toggle-hidden')) {
-                allOpen = false;
-                console.log(`Div ${index} is closed (has toggle-hidden)`);
-            } else {
-                // Also check for other potential "closed" indicators
-                const button = div.querySelector('button.toggle-button');
-                if (button) {
-                    const buttonClasses = Array.from(button.classList);
-                    console.log(`Div ${index} button classes:`, buttonClasses);
-                    
-                    // Check if button has toggle-button-hidden class
-                    if (button.classList.contains('toggle-button-hidden')) {
-                        allOpen = false;
-                        console.log(`Div ${index} is closed (button has toggle-button-hidden)`);
-                    } else {
-                        allClosed = false;
-                        console.log(`Div ${index} is open`);
-                    }
+            // Only check dropdowns that have toggle buttons (these are the toggleable ones)
+            const button = div.querySelector('button.toggle-button');
+            if (button) {
+                hasToggleableDropdowns = true;
+                const buttonClasses = Array.from(button.classList);
+                console.log(`Div ${index} button classes:`, buttonClasses);
+                
+                // Check if the dropdown is closed (has toggle-hidden class)
+                if (div.classList.contains('toggle-hidden')) {
+                    allOpen = false;
+                    console.log(`Div ${index} is closed (has toggle-hidden)`);
                 } else {
-                    // If no toggle button found, assume open
                     allClosed = false;
-                    console.log(`Div ${index} has no toggle button, assuming open`);
+                    console.log(`Div ${index} is open (no toggle-hidden)`);
                 }
+            } else {
+                // Skip dropdowns without toggle buttons - they're not part of our toggle system
+                console.log(`Div ${index} has no toggle button, skipping from state check`);
             }
         });
         
-        console.log('State check result:', { allOpen, allClosed });
+        // If no toggleable dropdowns found, default to "all closed"
+        if (!hasToggleableDropdowns) {
+            allOpen = false;
+            allClosed = true;
+        }
+        
+        console.log('State check result:', { allOpen, allClosed, hasToggleableDropdowns });
         return { allOpen, allClosed };
     }
     
@@ -108,19 +110,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         
         // Watch for class changes on div dropdowns using MutationObserver
+        // Only watch dropdowns that have toggle buttons
         const divs = document.querySelectorAll('div.dropdown');
-        console.log('Found', divs.length, 'div dropdowns');
-        if (divs.length > 0) {
+        const toggleableDivs = Array.from(divs).filter(div => div.querySelector('button.toggle-button'));
+        console.log('Found', divs.length, 'total div dropdowns,', toggleableDivs.length, 'are toggleable');
+        
+        if (toggleableDivs.length > 0) {
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        console.log('Div dropdown class changed:', mutation.target.className);
+                        console.log('Toggleable div dropdown class changed:', mutation.target.className);
                         updateToggleButton();
                     }
                 });
             });
             
-            divs.forEach(div => {
+            toggleableDivs.forEach(div => {
                 observer.observe(div, { attributes: true, attributeFilter: ['class'] });
             });
         }
