@@ -9,6 +9,95 @@ document.addEventListener("DOMContentLoaded", () => {
         return; // Exit if no dropdowns found
     }
 
+    // Function to check current state of all dropdowns
+    function checkDropdownState() {
+        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown');
+        const divs = document.querySelectorAll('div.dropdown');
+        
+        let allOpen = true;
+        let allClosed = true;
+        
+        // Check details elements
+        details.forEach(detail => {
+            if (detail.open) {
+                allClosed = false;
+            } else {
+                allOpen = false;
+            }
+        });
+        
+        // Check div dropdowns (they're closed if they have toggle-hidden class)
+        divs.forEach(div => {
+            if (div.classList.contains('toggle-hidden')) {
+                allOpen = false;
+            } else {
+                allClosed = false;
+            }
+        });
+        
+        return { allOpen, allClosed };
+    }
+    
+    // Function to update toggle button based on dropdown state
+    function updateToggleButton() {
+        const { allOpen, allClosed } = checkDropdownState();
+        const button = document.getElementById(toggleButtonId);
+        
+        if (!button) return;
+        
+        if (allOpen) {
+            document.body.classList.add(rootDropdownState);
+            button.innerHTML = '<i class="fa-solid fa-angles-up"></i>';
+            button.title = "Close all dropdowns";
+        } else if (allClosed) {
+            document.body.classList.remove(rootDropdownState);
+            button.innerHTML = '<i class="fa-solid fa-angles-down"></i>';
+            button.title = "Open all dropdowns";
+        }
+        // If some are open and some are closed, keep current state
+    }
+    
+    // Function to set up observers for dropdown changes
+    function setupDropdownWatchers() {
+        // Watch for changes to details elements
+        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown');
+        details.forEach(detail => {
+            detail.addEventListener('toggle', updateToggleButton);
+        });
+        
+        // Watch for class changes on div dropdowns using MutationObserver
+        const divs = document.querySelectorAll('div.dropdown');
+        if (divs.length > 0) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        updateToggleButton();
+                    }
+                });
+            });
+            
+            divs.forEach(div => {
+                observer.observe(div, { attributes: true, attributeFilter: ['class'] });
+            });
+        }
+        
+        // Also watch for toggle-button changes
+        const buttons = document.querySelectorAll('button.toggle-button');
+        if (buttons.length > 0) {
+            const buttonObserver = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        updateToggleButton();
+                    }
+                });
+            });
+            
+            buttons.forEach(button => {
+                buttonObserver.observe(button, { attributes: true, attributeFilter: ['class'] });
+            });
+        }
+    }
+
     const headerEnd = document.querySelector(".article-header-buttons");
     if (headerEnd) {
         const button = document.createElement("button");
@@ -19,6 +108,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         headerEnd.prepend(button);
     }
+    
+    // Set up watchers for dropdown state changes
+    setupDropdownWatchers();
+    
+    // Initial state check
+    updateToggleButton();
 
     document.getElementById(toggleButtonId)?.addEventListener("click", () => {
         if (document.body.classList.contains(rootDropdownState)) {
