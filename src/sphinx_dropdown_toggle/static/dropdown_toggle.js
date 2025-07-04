@@ -17,8 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
         let allOpen = true;
         let allClosed = true;
         
+        console.log('Checking dropdown state...');
+        
         // Check details elements
-        details.forEach(detail => {
+        details.forEach((detail, index) => {
+            console.log(`Details ${index}:`, detail.open);
             if (detail.open) {
                 allClosed = false;
             } else {
@@ -26,15 +29,39 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
         
-        // Check div dropdowns (they're closed if they have toggle-hidden class)
-        divs.forEach(div => {
+        // Check div dropdowns - need to figure out how to detect if they're open
+        divs.forEach((div, index) => {
+            const classes = Array.from(div.classList);
+            console.log(`Div ${index} classes:`, classes);
+            
+            // Check if the div has toggle-hidden class (original logic)
             if (div.classList.contains('toggle-hidden')) {
                 allOpen = false;
+                console.log(`Div ${index} is closed (has toggle-hidden)`);
             } else {
-                allClosed = false;
+                // Also check for other potential "closed" indicators
+                const button = div.querySelector('button.toggle-button');
+                if (button) {
+                    const buttonClasses = Array.from(button.classList);
+                    console.log(`Div ${index} button classes:`, buttonClasses);
+                    
+                    // Check if button has toggle-button-hidden class
+                    if (button.classList.contains('toggle-button-hidden')) {
+                        allOpen = false;
+                        console.log(`Div ${index} is closed (button has toggle-button-hidden)`);
+                    } else {
+                        allClosed = false;
+                        console.log(`Div ${index} is open`);
+                    }
+                } else {
+                    // If no toggle button found, assume open
+                    allClosed = false;
+                    console.log(`Div ${index} has no toggle button, assuming open`);
+                }
             }
         });
         
+        console.log('State check result:', { allOpen, allClosed });
         return { allOpen, allClosed };
     }
     
