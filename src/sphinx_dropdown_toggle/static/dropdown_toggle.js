@@ -4,25 +4,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Check for dropdowns
     const article = document.querySelector('article.bd-article');
-    const dropdowns = article ? article.querySelectorAll('details.dropdown, div.dropdown, .sd-dropdown') : [];
+    const dropdowns = article ? article.querySelectorAll('details.dropdown, details.sd-dropdown, details.toggle-details, div.dropdown, .sd-dropdown') : [];
     if (dropdowns.length === 0) {
         return; // Exit if no dropdowns found
     }
 
     // Function to check current state of all dropdowns
     function checkDropdownState() {
-        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown');
-        const divs = document.querySelectorAll('div.dropdown');
+        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown, details.toggle-details');
+        const toggleableDivs = document.querySelectorAll('div.dropdown button.toggle-button');
         
         let allOpen = true;
         let allClosed = true;
         let hasToggleableDropdowns = false;
         
-        console.log('Checking dropdown state...');
-        
-        // Check details elements
-        details.forEach((detail, index) => {
-            console.log(`Details ${index}:`, detail.open);
+        // Check details elements (includes Sphinx Design dropdowns)
+        details.forEach(detail => {
             hasToggleableDropdowns = true;
             if (detail.open) {
                 allClosed = false;
@@ -31,29 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
         
-        // Check div dropdowns - only check ones that actually have toggle buttons
-        divs.forEach((div, index) => {
-            const classes = Array.from(div.classList);
-            console.log(`Div ${index} classes:`, classes);
-            
-            // Only check dropdowns that have toggle buttons (these are the toggleable ones)
-            const button = div.querySelector('button.toggle-button');
-            if (button) {
-                hasToggleableDropdowns = true;
-                const buttonClasses = Array.from(button.classList);
-                console.log(`Div ${index} button classes:`, buttonClasses);
-                
-                // Check if the dropdown is closed (has toggle-hidden class)
-                if (div.classList.contains('toggle-hidden')) {
-                    allOpen = false;
-                    console.log(`Div ${index} is closed (has toggle-hidden)`);
-                } else {
-                    allClosed = false;
-                    console.log(`Div ${index} is open (no toggle-hidden)`);
-                }
+        // Check div dropdowns with toggle buttons
+        toggleableDivs.forEach(button => {
+            hasToggleableDropdowns = true;
+            const div = button.closest('div.dropdown');
+            if (div.classList.contains('toggle-hidden')) {
+                allOpen = false;
             } else {
-                // Skip dropdowns without toggle buttons - they're not part of our toggle system
-                console.log(`Div ${index} has no toggle button, skipping from state check`);
+                allClosed = false;
             }
         });
         
@@ -63,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
             allClosed = true;
         }
         
-        console.log('State check result:', { allOpen, allClosed, hasToggleableDropdowns });
         return { allOpen, allClosed };
     }
     
@@ -72,86 +53,47 @@ document.addEventListener("DOMContentLoaded", () => {
         const { allOpen, allClosed } = checkDropdownState();
         const button = document.getElementById(toggleButtonId);
         
-        console.log('updateToggleButton called:', { allOpen, allClosed });
-        
-        if (!button) {
-            console.log('Toggle button not found');
-            return;
-        }
+        if (!button) return;
         
         if (allOpen) {
-            console.log('Setting to "close all" state');
             document.body.classList.add(rootDropdownState);
             button.innerHTML = '<i class="fa-solid fa-angles-up"></i>';
             button.title = "Close all dropdowns";
         } else if (allClosed) {
-            console.log('Setting to "open all" state');
             document.body.classList.remove(rootDropdownState);
             button.innerHTML = '<i class="fa-solid fa-angles-down"></i>';
             button.title = "Open all dropdowns";
-        } else {
-            console.log('Mixed state - keeping current button state');
         }
         // If some are open and some are closed, keep current state
     }
     
     // Function to set up observers for dropdown changes
     function setupDropdownWatchers() {
-        console.log('Setting up dropdown watchers...');
-        
-        // Watch for changes to details elements
-        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown');
-        console.log('Found', details.length, 'details dropdowns');
+        // Watch for changes to details elements (includes Sphinx Design dropdowns)
+        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown, details.toggle-details');
         details.forEach(detail => {
-            detail.addEventListener('toggle', () => {
-                console.log('Details dropdown toggled:', detail.open);
-                updateToggleButton();
-            });
+            detail.addEventListener('toggle', updateToggleButton);
         });
         
-        // Watch for class changes on div dropdowns using MutationObserver
-        // Only watch dropdowns that have toggle buttons
-        const divs = document.querySelectorAll('div.dropdown');
-        const toggleableDivs = Array.from(divs).filter(div => div.querySelector('button.toggle-button'));
-        console.log('Found', divs.length, 'total div dropdowns,', toggleableDivs.length, 'are toggleable');
+        // Watch for class changes on div dropdowns with toggle buttons
+        const toggleableDivs = Array.from(document.querySelectorAll('div.dropdown')).filter(div => div.querySelector('button.toggle-button'));
         
         if (toggleableDivs.length > 0) {
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        console.log('Toggleable div dropdown class changed:', mutation.target.className);
-                        updateToggleButton();
-                    }
-                });
-            });
-            
+            const observer = new MutationObserver(() => updateToggleButton());
             toggleableDivs.forEach(div => {
                 observer.observe(div, { attributes: true, attributeFilter: ['class'] });
             });
         }
         
-        // Hook into togglebutton click events more directly
-        // Add click listeners to admonition titles and toggle buttons
-        const admonitionTitles = document.querySelectorAll('.admonition-title');
-        const toggleButtons = document.querySelectorAll('button.toggle-button');
+        // Listen for clicks on interactive elements
+        const clickTargets = [
+            ...document.querySelectorAll('.admonition-title'),
+            ...document.querySelectorAll('button.toggle-button'),
+            ...document.querySelectorAll('details.toggle-details summary')
+        ];
         
-        console.log('Found', admonitionTitles.length, 'admonition titles');
-        console.log('Found', toggleButtons.length, 'toggle buttons');
-        
-        // Listen for clicks on admonition titles (which trigger toggles)
-        admonitionTitles.forEach(title => {
-            title.addEventListener('click', () => {
-                console.log('Admonition title clicked, updating toggle state...');
-                // Use a small delay to let the togglebutton script finish its work
-                setTimeout(updateToggleButton, 10);
-            });
-        });
-        
-        // Listen for clicks on toggle buttons directly
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                console.log('Toggle button clicked, updating toggle state...');
-                // Use a small delay to let the togglebutton script finish its work
+        clickTargets.forEach(target => {
+            target.addEventListener('click', () => {
                 setTimeout(updateToggleButton, 10);
             });
         });
@@ -170,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Function to initialize watchers and state
     function initializeToggleSystem() {
-        console.log('Initializing toggle system...');
         setupDropdownWatchers();
         updateToggleButton();
     }
@@ -193,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
     sphinxToggleRunWhenDOMLoaded(() => {
         // Give togglebutton.js a moment to finish adding buttons
         setTimeout(() => {
-            console.log('DOM loaded, initializing toggle synchronization...');
             initializeToggleSystem();
         }, 10);
     });
@@ -213,22 +153,21 @@ document.addEventListener("DOMContentLoaded", () => {
             button.innerHTML = '<i class="fa-solid fa-angles-up"></i>';
             button.title = "Close all dropdowns";
         }
-        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown');
-        details.forEach(detail => {
+        
+        // Open all details dropdowns
+        document.querySelectorAll('details.dropdown, details.sd-dropdown, details.toggle-details').forEach(detail => {
             if (!detail.open) {
                 detail.open = true;
             }
         });
-        const divs = document.querySelectorAll('div.dropdown');
-        divs.forEach(div => {
+        
+        // Open all div dropdowns
+        document.querySelectorAll('div.dropdown').forEach(div => {
             div.classList.remove('toggle-hidden');
         });
-        const buttons = document.querySelectorAll('button.toggle-button');
-        buttons.forEach(button => {
+        document.querySelectorAll('button.toggle-button').forEach(button => {
             button.classList.remove('toggle-button-hidden');
         });
-
-        console.log("Dropdowns opened");
     }
 
     function closeDropdowns() {
@@ -238,21 +177,20 @@ document.addEventListener("DOMContentLoaded", () => {
             button.innerHTML = '<i class="fa-solid fa-angles-down"></i>';
             button.title = "Open all dropdowns";
         }
-        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown');
-        details.forEach(detail => {
+        
+        // Close all details dropdowns
+        document.querySelectorAll('details.dropdown, details.sd-dropdown, details.toggle-details').forEach(detail => {
             if (detail.open) {
                 detail.open = false;
             }
         });
-        const divs = document.querySelectorAll('div.dropdown');
-        divs.forEach(div => {
+        
+        // Close all div dropdowns
+        document.querySelectorAll('div.dropdown').forEach(div => {
             div.classList.add('toggle-hidden');
         });
-        const buttons = document.querySelectorAll('button.toggle-button');
-        buttons.forEach(button => {
+        document.querySelectorAll('button.toggle-button').forEach(button => {
             button.classList.add('toggle-button-hidden');
         });
-
-        console.log("Dropdowns closed");
     }
 });
