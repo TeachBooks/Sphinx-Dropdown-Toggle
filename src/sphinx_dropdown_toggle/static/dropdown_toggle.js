@@ -10,9 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Function to check current state of all dropdowns
-    function checkDropdownState() {
-        const details = document.querySelectorAll('details.dropdown, details.sd-dropdown, details.toggle-details');
-        const toggleableDivs = document.querySelectorAll('div.dropdown button.toggle-button');
+    function checkDropdownState(article) {
+        const details = article.querySelectorAll('details.dropdown, details.sd-dropdown, details.toggle-details');
+        const toggleableDivs = article.querySelectorAll('div.dropdown button.toggle-button');
         
         let allOpen = true;
         let allClosed = true;
