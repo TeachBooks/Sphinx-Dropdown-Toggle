@@ -77,16 +77,18 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </button>
                     <ul class="dropdown-menu">
-                        <li onclick="closeDropdowns()">
-                        <span class="btn__icon-container">
-                            <i class="fa-solid fa-angles-down"></i>
-                        </span><span class="btn__text-container">Open all dropdowns</span>
-                        </li>
-                        <li onclick="openDropdowns()">
-                        <span class="btn__icon-container">
-                            <i class="fa-solid fa-angles-up"></i>
-                        </span><span class="btn__text-container">Close all dropdowns</span>
-                        </li>
+                        <li><a href="#" class="btn btn-sm dropdown-item" data-action="open">
+                            <span class="btn__icon-container">
+                                <i class="fa-solid fa-angles-down"></i>
+                            </span>
+                            <span class="btn__text-container">Open all dropdowns</span>
+                        </a></li>
+                        <li><a href="#" class="btn btn-sm dropdown-item" data-action="close">
+                            <span class="btn__icon-container">
+                                <i class="fa-solid fa-angles-up"></i>
+                            </span>
+                            <span class="btn__text-container">Close all dropdowns</span>
+                        </a></li>
                     </ul>
                     </div>`;
             button.title = "Some dropdowns are open";
@@ -165,8 +167,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 10);
     });
 
-    document.getElementById(toggleButtonId)?.addEventListener("click", () => {
-        // Check state and decide on action
+    document.getElementById(toggleButtonId)?.addEventListener("click", (event) => {
+        // Handle dropdown menu clicks
+        if (event.target.closest('[data-action]')) {
+            const action = event.target.closest('[data-action]').getAttribute('data-action');
+            if (action === 'open') {
+                openDropdowns();
+            } else if (action === 'close') {
+                closeDropdowns();
+            }
+            event.preventDefault();
+            return;
+        }
+
+        // Check state and decide on action for main button click
         const { allOpen, allClosed } = checkDropdownState();
         if (allClosed) {
             openDropdowns();
