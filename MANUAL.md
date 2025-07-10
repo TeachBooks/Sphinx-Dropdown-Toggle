@@ -12,9 +12,17 @@ This section is useful for user type 3-5.
 
 ## Usage
 
-When dropdowns are included on a page, initially <i class="fa-solid fa-angles-down"></i> will be shown at the top of the page near the other symbols. Clicking this will toggle all dropdowns on the page, opening them all at once.
+When dropdowns are included on a page, initially one of three buttons will be shown:
 
-At this point the button wil change to <i class="fa-solid fa-angles-up"></i> and clicking it again will close all dropdowns, including initially open ones, and revert the button to its original state.
+- <i class="fa-solid fa-angles-down"></i> will be shown at the top of the page if all dropdowns are closed. Clicking this button will open all dropdowns.
+
+- <i class="fa-solid fa-angles-up"></i> will be shown at the top of the page if all dropdowns are opened. Clicking this button will close all dropdowns.
+
+- <div style="display: flex; flex-direction: column; align-items: center; line-height: 1; gap: 0; margin: 0;margin-left:-5px;margin-right:-5px"><i class="fa-solid fa-angle-up" style="margin-bottom: -5px;"></i><i class="fa-solid fa-angle-down" style="margin-top: -5px;"></i></div> will be shown at the top of the page if some dropdowns are closed and some are opened. This button provides a menu on hover or click, which contains the previous two buttons.
+
+After clicking one of the buttons, the button at the top of the page will reflect the current state of all dropdowns on the page.
+
+If opening or closing a dropdown (in the main article) causes the current state to change, to the button at the top of the page  will again directly reflect the new state.
 
 ## Reference examples
 
