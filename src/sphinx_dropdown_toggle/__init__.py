@@ -18,6 +18,11 @@ def copy_javascript(app: Sphinx, exc):
     with open(js_file,'r') as js:
         js_content = js.read()
         # Replace placeholders with actual translations
+        print('Translating JavaScript content...')
+        print('Current language:', app.config.language)
+        print('Translation of \"Close all dropdowns\":', translate('Close all dropdowns'))
+        print('Translation of \"Open all dropdowns\":', translate('Open all dropdowns'))
+        print('Translation of \"Some dropdowns are open, some closed\":', translate('Some dropdowns are open, some closed'))
         js_content = js_content.replace('Close all dropdowns', translate('Close all dropdowns'))
         js_content = js_content.replace('Open all dropdowns', translate('Open all dropdowns'))
         js_content = js_content.replace('Some dropdowns are open, some closed', translate('Some dropdowns are open, some closed'))
