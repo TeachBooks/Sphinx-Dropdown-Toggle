@@ -1,1 +1,11 @@
-include src/sphinx-dropdown-toggle/static/*.js
+recursive-include src *.js
+recursive-include src *.css
+
+recursive-include src *.json
+recursive-include src *.mo
+recursive-include src *.po
+recursive-include src *.py
+
+include LICENSE
+include MANIFEST.in
+include README.md

@@ -69,21 +69,20 @@ document.addEventListener("DOMContentLoaded", () => {
             // Mixed state: show stacked icons, and a dropdown menu with the two orginal buttons
             button.innerHTML = `
                 <div class="dropdown" style="margin-right:-2px">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                        aria-label="Download this page">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <div style="display: flex; flex-direction: column; align-items: center; line-height: 1; gap: 0; margin: 0;margin-left:-5px;margin-right:-5px">
                             <i class="fa-solid fa-angle-up" style="margin-bottom: -5px;"></i>
                             <i class="fa-solid fa-angle-down" style="margin-top: -5px;"></i>
                         </div>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="#" class="btn btn-sm dropdown-item" data-action="open">
+                        <li><a href="#" class="btn btn-sm dropdown-item" data-action="open" title="Open all dropdowns">
                             <span class="btn__icon-container">
                                 <i class="fa-solid fa-angles-down"></i>
                             </span>
                             <span class="btn__text-container">Open all dropdowns</span>
                         </a></li>
-                        <li><a href="#" class="btn btn-sm dropdown-item" data-action="close">
+                        <li><a href="#" class="btn btn-sm dropdown-item" data-action="close" title="Close all dropdowns">
                             <span class="btn__icon-container">
                                 <i class="fa-solid fa-angles-up"></i>
                             </span>
@@ -91,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </a></li>
                     </ul>
                     </div>`;
-            button.title = "Some dropdowns are open";
+            button.title = "Some dropdowns are open, some closed";
         }
 
     }
