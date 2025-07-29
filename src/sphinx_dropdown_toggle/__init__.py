@@ -3,7 +3,7 @@ from sphinx.locale import get_translation
 
 from sphinx.application import Sphinx
 
-MESSAGE_CATALOG_NAME = "dropdown_toggle"
+MESSAGE_CATALOG_NAME = "dropdowntoggle"
 translate = get_translation(MESSAGE_CATALOG_NAME)
 
 try:

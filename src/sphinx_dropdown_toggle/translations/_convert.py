@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import subprocess
 
-MESSAGE_CATALOG_NAME = "dropdown_toggle"
+MESSAGE_CATALOG_NAME = "dropdowntoggle"
 
 def convert_json(folder=None):
     folder = folder or Path(__file__).parent
@@ -26,7 +26,7 @@ def convert_json(folder=None):
                 header = f"""
 msgid ""
 msgstr ""
-"Project-Id-Version: TeachBooks-Sphinx-Grasple\\n"
+"Project-Id-Version: TeachBooks-Dropdown-Toggle\\n"
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=UTF-8\\n"
 "Content-Transfer-Encoding: 8bit\\n"

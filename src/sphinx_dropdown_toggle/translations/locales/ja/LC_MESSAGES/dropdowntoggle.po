@@ -1,18 +1,18 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: TeachBooks-Sphinx-Grasple\n"
+"Project-Id-Version: TeachBooks-Dropdown-Toggle\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Close all dropdowns"
-msgstr "Sluit alle dropdowns"
+msgstr "すべてのドロップダウンを閉じる"
 
 msgid "Some dropdowns are open, some closed"
-msgstr "Sommige dropdowns open, sommige gesloten"
+msgstr "一部のドロップダウンが開いており、一部が閉じています"
 
 msgid "Open all dropdowns"
-msgstr "Open alle dropdowns"
+msgstr "すべてのドロップダウンを開く"
