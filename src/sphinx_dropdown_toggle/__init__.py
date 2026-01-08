@@ -3,6 +3,10 @@ from sphinx.locale import get_translation
 
 from sphinx.application import Sphinx
 
+from jupyterbook_patches.patches.preserve_dropdown_state import PreserveDropdownStatePatch as Patch
+from jupyterbook_patches.patches.preserve_dropdown_state import JS_FILE_NAME
+from jupyterbook_patches import set_static_path as add_static_path_patches
+
 MESSAGE_CATALOG_NAME = "dropdowntoggle"
 translate = get_translation(MESSAGE_CATALOG_NAME)
 
@@ -27,6 +31,9 @@ def copy_javascript(app: Sphinx, exc):
             js.write(js_content)
 
 def setup(app: Sphinx):
+
+    app.connect("builder-inited", check_and_add_patch)
+
     app.add_js_file('dropdown_toggle.js')
     app.connect('build-finished', copy_javascript)
 
@@ -40,3 +47,15 @@ def setup(app: Sphinx):
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
+
+
+def check_and_add_patch(app):
+    filename = JS_FILE_NAME
+    # Check if already registered
+    for js_file, _options in app.registry.js_files:
+        if js_file == filename:
+            return
+    # If not, initialize patch and add static path of patches
+    patch = Patch()
+    patch.initialize(app)
+    add_static_path_patches(app)
