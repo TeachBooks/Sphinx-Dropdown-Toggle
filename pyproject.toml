@@ -12,7 +12,8 @@ authors = [
 description = "Sphinx extension that, on pages with dropdown elements, adds a button to open/close all dropdowns simultaneously."
 readme = "README.md"
 dependencies = [
-    "sphinx"
+    "sphinx",
+    "jupyterbook_patches>=1.13.1"
 ]
 requires-python = ">=3.10"
 

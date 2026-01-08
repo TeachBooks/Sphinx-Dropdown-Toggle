@@ -4,6 +4,8 @@
 
 This Sphinx extension adds a button to open/close all dropdowns simultaneously, provided at least one dropdown is present.
 
+This extension also applies the `preserve_dropdown_state` patch from [JupyterBook-Patches](https://pypi.org/project/jupyterbook-patches/).
+
 ## Installation
 To install the Sphinx-Dropdown-Toggle, follow these steps:
 
